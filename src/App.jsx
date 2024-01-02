@@ -2,7 +2,7 @@ import JSZip from "jszip";
 import { useReducer, useState } from 'preact/hooks';
 import './App.css';
 import { IconDocBadgePlus } from "./components/icons/IconDocBadgePlus";
-import { IconSquareGrid } from "./components/icons/IconSquareGrid";
+import { IconRectangleGrid } from "./components/icons/IconRectangleGrid";
 import { IconWandAndStars } from "./components/icons/IconWandAndStars";
 import reducer from "./reducer";
 
@@ -74,11 +74,8 @@ export default function App() {
             <header className="header">
                 <div className="left">
                     <div className="info">Simple Comic Web</div>
-                    <div className="action">
-                        <label className="upload-button" htmlFor="upload-file"
-                            role="button" title="打开文件">
-                            <IconDocBadgePlus fill="#1d1d1f" fillOpacity="0.85" />
-                        </label>
+                    <label className="action-button" htmlFor="upload-file" title="打开文件">
+                        <IconDocBadgePlus fill="#1d1d1f" fillOpacity="0.85" />
                         <input
                             id="upload-file"
                             className="upload-file"
@@ -87,22 +84,19 @@ export default function App() {
                             onChange={handleUpdateFile}
                             title="上传漫画文件"
                         />
-                    </div>
+                    </label>
                 </div>
                 <div className="right">
-                    <div className="action">
-                        <button
-                            className="match-page-button"
-                            onClick={handleMatchPage}
-                            title="在并页模式阅读时，修正跨页匹配不正确的情况。">
-                            <IconWandAndStars fill="#1d1d1f" fillOpacity="0.85" />
-                        </button>
-                    </div>
-                    <div className="action">
-                        <button title="缩略视图">
-                            <IconSquareGrid fill="#1d1d1f" fillOpacity="0.85" />
-                        </button>
-                    </div>
+                    <button
+                        className="action-button"
+                        onClick={handleMatchPage}
+                        title="调整跨页匹配，仅在双页面布局生效。"
+                    >
+                        <IconWandAndStars fill="#1d1d1f" fillOpacity="0.85" />
+                    </button>
+                    <button className="action-button" title="缩略视图">
+                        <IconRectangleGrid fill="#1d1d1f" fillOpacity="0.85" />
+                    </button>
                 </div>
             </header>
             <main className="main" onWheel={handleWhell}>

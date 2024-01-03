@@ -1,5 +1,5 @@
-import JSZip from "jszip";
 import { IconDocBadgePlus } from "@/components/icons/IconDocBadgePlus.jsx";
+import { strToU8, unzipSync } from "fflate";
 
 export default function UpdateButton({ isLoading, dispatch }) {
   async function handleUpdateFile(event) {
@@ -8,25 +8,34 @@ export default function UpdateButton({ isLoading, dispatch }) {
       return;
     }
     dispatch({ type: "TOGGLE_LOADING" });
-    const jszip = new JSZip();
-    try {
-      const zip = await jszip.loadAsync(files[0]);
-      const urls = await Promise.all(
-        Object.keys(zip.files)
-          .filter((name) => !zip.files[name].dir)
-          .map(async (name) => {
-            const item = zip.files[name];
-            const blob = await item.async("blob");
-            const imageUrl = URL.createObjectURL(blob);
-            return imageUrl;
-          })
-      );
-      dispatch({ type: "SET_IMAGE_URLS", payload: urls });
-      dispatch({ type: "TOGGLE_LOADING" });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      URL.revokeObjectURL(event.target.value);
+    const file = files[0];
+    if (file) {
+      const urls = [];
+      try {
+        file.arrayBuffer().then((buff) => {
+          const fileData = new Uint8Array(buff);
+          const unzipped = unzipSync(fileData, {
+            filter(file) {
+              return !file.name.endsWith("/");
+            },
+          });
+          Object.entries(unzipped).map(([name, data]) => {
+            // 乱码
+            // const fileName = new TextDecoder("utf-8").decode(strToU8(name));
+            console.log(name);
+            // console.log(fileName);
+            const url = URL.createObjectURL(new Blob([data.buffer]));
+            urls.push(url);
+          });
+          console.log(urls.length);
+          dispatch({ type: "SET_IMAGE_URLS", payload: urls });
+          dispatch({ type: "TOGGLE_LOADING" });
+        });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        urls.forEach((url) => URL.revokeObjectURL(url));
+      }
     }
   }
 

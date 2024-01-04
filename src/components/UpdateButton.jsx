@@ -46,6 +46,7 @@ export default function UpdateButton({ isLoading, dispatch }) {
         id="upload-file"
         className="upload-file"
         type="file"
+        accept=".cbz,.zip"
         disabled={isLoading}
         onChange={handleUpdateFile}
         title="上传漫画文件"

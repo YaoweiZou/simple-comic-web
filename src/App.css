@@ -1,6 +1,10 @@
-body {
+html, body {
     margin: 0;
     font-size: 17px;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 button {
@@ -26,6 +30,11 @@ button {
     height: 100%;
     font-size: 16px;
     font-family: sans-serif;
+}
+
+#app {
+    width: 100vw;
+    height: 100vh;
 }
 
 .header {
@@ -114,4 +123,31 @@ button {
     -webkit-user-select: none;
     -moz-user-select: none;
     object-fit: contain;
+}
+
+.drag-section {
+    width: 100%;
+    height: 100%;
+    padding: 4rem;
+}
+
+.drag-wrapper {
+    width: 100%;
+    height: 100%;
+    border: 5px dashed #ccc;
+    border-radius: 2rem;
+}
+
+.drag-wrapper:hover {
+    border-color: #f2f2f2;
+}
+
+.drag-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 980px;
+    height: 100%;
+    margin: 0 auto;
 }

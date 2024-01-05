@@ -1,5 +1,6 @@
+import { unzipSync } from "fflate";
+
 import { IconDocBadgePlus } from "@/components/icons/IconDocBadgePlus.jsx";
-import { strToU8, unzipSync } from "fflate";
 
 export default function UpdateButton({ isLoading, dispatch }) {
   async function handleUpdateFile(event) {

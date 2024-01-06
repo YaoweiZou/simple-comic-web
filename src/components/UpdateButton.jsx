@@ -41,11 +41,15 @@ export default function UpdateButton({ isLoading, dispatch }) {
   }
 
   return (
-    <label className="action-button" htmlFor="upload-file" title="打开文件">
+    <label
+      className="flex justify-center items-center h-[45px] min-w-9 mx-[5px] cursor-pointer"
+      htmlFor="upload-file"
+      title="打开文件"
+    >
       <IconDocBadgePlus fill="#1d1d1f" fillOpacity="0.85" />
       <input
         id="upload-file"
-        className="upload-file"
+        className="hidden"
         type="file"
         accept=".cbz,.zip"
         disabled={isLoading}

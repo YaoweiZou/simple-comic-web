@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "preact/hooks";
 import { unzipSync } from "fflate";
 
-export default function DragSection({state, dispatch}) {
+export default function DragSection({ state, dispatch }) {
   const dragSectionRef = useRef(null);
 
   useEffect(() => {
@@ -69,13 +69,15 @@ export default function DragSection({state, dispatch}) {
   }, []);
 
   return (
-    <section className="drag-section">
-      <div ref={dragSectionRef} className="drag-wrapper">
+    <div>
+      <div
+        ref={dragSectionRef}
+        className="flex justify-center items-center min-h-52 p-4 border-4 border-dashed rounded-3xl"
+      >
         <div className="drag-content">
-          <h1>Simple Comic Web</h1>
-          <p>将漫画文件拖动到此处</p>
+          <p className="text-lg">将漫画文件拖动到此处开始阅读</p>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

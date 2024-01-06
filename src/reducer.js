@@ -15,6 +15,9 @@
 export default function reducer(state, action) {
   switch (action.type) {
     case "SET_IMAGE_URLS":
+      if (state.imageUrls.length !== 0) {
+        state.imageUrls.forEach(url => URL.revokeObjectURL(url));
+      }
       return {
         ...state,
         imageUrls: action.payload

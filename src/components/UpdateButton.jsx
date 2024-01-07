@@ -1,6 +1,5 @@
-import { unzipSync } from "fflate";
-
 import { IconDocBadgePlus } from "@/components/icons/IconDocBadgePlus.jsx";
+import { unzip } from "@/utils/unzip.js";
 
 export default function UpdateButton({ isLoading, dispatch }) {
   async function handleUpdateFile(event) {
@@ -13,22 +12,8 @@ export default function UpdateButton({ isLoading, dispatch }) {
     if (file) {
       const urls = [];
       try {
-        file.arrayBuffer().then((buff) => {
-          const fileData = new Uint8Array(buff);
-          const unzipped = unzipSync(fileData, {
-            filter(file) {
-              return !file.name.endsWith("/");
-            },
-          });
-          Object.entries(unzipped).map(([name, data]) => {
-            // 乱码
-            // const fileName = new TextDecoder("utf-8").decode(strToU8(name));
-            console.log(name);
-            // console.log(fileName);
-            const url = URL.createObjectURL(new Blob([data.buffer]));
-            urls.push(url);
-          });
-          console.log(urls.length);
+        unzip(file).then((files) => {
+          files.forEach((item) => urls.push(URL.createObjectURL(item.blob)));
           dispatch({ type: "SET_IMAGE_URLS", payload: urls });
           dispatch({ type: "TOGGLE_LOADING" });
         });

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "preact/hooks";
-import { unzipSync } from "fflate";
+import { unzip } from "@/utils/unzip.js";
 
 export default function DragSection({ state, dispatch }) {
   const dragSectionRef = useRef(null);
@@ -7,7 +7,6 @@ export default function DragSection({ state, dispatch }) {
   useEffect(() => {
     const dropEvent = (e) => {
       e.preventDefault();
-      console.log("drop");
       if (!e.dataTransfer) return;
       const files = Array.from(e.dataTransfer.files);
       dispatch({ type: "TOGGLE_LOADING" });
@@ -15,22 +14,8 @@ export default function DragSection({ state, dispatch }) {
       if (file) {
         const urls = [];
         try {
-          file.arrayBuffer().then((buff) => {
-            const fileData = new Uint8Array(buff);
-            const unzipped = unzipSync(fileData, {
-              filter(file) {
-                return !file.name.endsWith("/");
-              },
-            });
-            Object.entries(unzipped).map(([name, data]) => {
-              // 乱码
-              // const fileName = new TextDecoder("utf-8").decode(strToU8(name));
-              console.log(name);
-              // console.log(fileName);
-              const url = URL.createObjectURL(new Blob([data.buffer]));
-              urls.push(url);
-            });
-            console.log(urls.length);
+          unzip(file).then((files) => {
+            files.forEach(item => urls.push(URL.createObjectURL(item.blob)));
             dispatch({ type: "SET_IMAGE_URLS", payload: urls });
             dispatch({ type: "TOGGLE_LOADING" });
           });

@@ -4,7 +4,6 @@ import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "/simple-comic-web/",
   plugins: [preact()],
   server: {
     port: 3000,

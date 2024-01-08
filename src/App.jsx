@@ -21,7 +21,7 @@ export default function App() {
     <>
       {imageUrls.length === 0 ? (
         <main className="flex items-center justify-center h-full">
-          <div className="w-1/2 p-8 m-8 bg-gray-50 border border-solid border-gray-100 rounded-3xl">
+          <div className="w-1/2 p-8 m-8 bg-gray-50 border border-solid border-gray-200 rounded-3xl">
             <div>
               <h1 className="text-4xl font-semibold">Simple Web Comic</h1>
               <p className="text-base my-6">

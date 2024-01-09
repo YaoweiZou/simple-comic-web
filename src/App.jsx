@@ -10,7 +10,7 @@ const initState = {
   pageIndex: 0,
   readMode: "Double",
   readOrder: "RightToLeft",
-  isLoading: false,
+  isLoading: false
 };
 
 export default function App() {
@@ -24,9 +24,7 @@ export default function App() {
           <div className="w-1/2 p-8 m-8 bg-gray-50 border border-solid border-gray-200 rounded-3xl">
             <div>
               <h1 className="text-4xl font-semibold">Simple Web Comic</h1>
-              <p className="text-base my-6">
-                在浏览器中阅读本地漫画，支持 zip 和 cbz 文件。
-              </p>
+              <p className="text-base my-6">在浏览器中阅读本地漫画，支持 zip 和 cbz 文件。</p>
             </div>
             <DragSection state={state} dispatch={dispatch} />
           </div>

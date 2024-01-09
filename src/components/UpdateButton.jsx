@@ -12,15 +12,15 @@ export default function UpdateButton({ isLoading, dispatch }) {
     if (file) {
       const urls = [];
       try {
-        unzip(file).then((files) => {
-          files.forEach((item) => urls.push(URL.createObjectURL(item.blob)));
+        unzip(file).then(files => {
+          files.forEach(item => urls.push(URL.createObjectURL(item.blob)));
           dispatch({ type: "SET_IMAGE_URLS", payload: urls });
           dispatch({ type: "TOGGLE_LOADING" });
         });
       } catch (error) {
         console.error(error);
       } finally {
-        urls.forEach((url) => URL.revokeObjectURL(url));
+        urls.forEach(url => URL.revokeObjectURL(url));
       }
     }
   }

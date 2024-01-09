@@ -49,7 +49,7 @@ export default function reducer(state, action) {
       } else if (state.readMode === "Double") {
         addend = 2;
       }
-      if (state.pageIndex === (state.imageUrls.length - 1)) {
+      if (state.pageIndex === state.imageUrls.length - 1) {
         addend = 0;
       }
       return {
@@ -73,7 +73,7 @@ export default function reducer(state, action) {
       };
     }
     case "MATCH_PAGE":
-      if (state.readMode === "Double" && state.pageIndex < (state.imageUrls.length - 1)) {
+      if (state.readMode === "Double" && state.pageIndex < state.imageUrls.length - 1) {
         return {
           ...state,
           pageIndex: state.pageIndex + 1

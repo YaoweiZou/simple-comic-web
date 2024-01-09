@@ -38,7 +38,7 @@ export default function UpdateButton({ isLoading, dispatch }) {
         type="file"
         accept=".cbz,.zip"
         disabled={isLoading}
-        onChange={handleUpdateFile}
+        onInput={handleUpdateFile}
         title="上传漫画文件"
       />
     </label>

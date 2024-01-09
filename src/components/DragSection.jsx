@@ -1,12 +1,14 @@
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
+import classNames from "classnames";
 
 import { unzip } from "@/utils/unzip.js";
 
 export default function DragSection({ state, dispatch }) {
+  const [hover, setHover] = useState(false);
   const dragSectionRef = useRef(null);
 
   useEffect(() => {
-    const dropEvent = (e) => {
+    const dropEvent = e => {
       e.preventDefault();
       if (!e.dataTransfer) return;
       const files = Array.from(e.dataTransfer.files);
@@ -15,7 +17,7 @@ export default function DragSection({ state, dispatch }) {
       if (file) {
         const urls = [];
         try {
-          unzip(file).then((files) => {
+          unzip(file).then(files => {
             files.forEach(item => urls.push(URL.createObjectURL(item.blob)));
             dispatch({ type: "SET_IMAGE_URLS", payload: urls });
             dispatch({ type: "TOGGLE_LOADING" });
@@ -23,7 +25,7 @@ export default function DragSection({ state, dispatch }) {
         } catch (error) {
           console.error(error);
         } finally {
-          urls.forEach((url) => URL.revokeObjectURL(url));
+          urls.forEach(url => URL.revokeObjectURL(url));
         }
       }
     };
@@ -35,24 +37,38 @@ export default function DragSection({ state, dispatch }) {
   }, []);
 
   useEffect(() => {
-    const dragEnterEvent = (e) => e.preventDefault();
+    const dragEnterEvent = e => {
+      e.preventDefault();
+      setHover(true);
+    };
 
     if (dragSectionRef.current) {
       dragSectionRef.current.addEventListener("dragenter", dragEnterEvent);
     }
-    return () =>
-      dragSectionRef.current.removeEventListener("dragenter", dragEnterEvent);
+    return () => dragSectionRef.current.removeEventListener("dragenter", dragEnterEvent);
   }, []);
 
   useEffect(() => {
-    const dragOverEvent = (e) => e.preventDefault();
+    const dragOverEvent = e => e.preventDefault();
 
     if (dragSectionRef.current) {
       dragSectionRef.current.addEventListener("dragover", dragOverEvent);
     }
-    return () =>
-      dragSectionRef.current.removeEventListener("dragover", dragOverEvent);
+    return () => dragSectionRef.current.removeEventListener("dragover", dragOverEvent);
   }, []);
+
+  useEffect(() => {
+    const dragLeave = e => {
+      e.preventDefault();
+      setHover(false);
+    };
+
+    if (dragSectionRef.current) {
+      dragSectionRef.current.addEventListener("dragleave", dragLeave);
+    }
+
+    return () => dragSectionRef.current.removeEventListener("dragleave", dragLeave);
+  });
 
   function handleUpdateFile(event) {
     const files = event.target.files ?? [];
@@ -64,15 +80,15 @@ export default function DragSection({ state, dispatch }) {
     if (file) {
       const urls = [];
       try {
-        unzip(file).then((files) => {
-          files.forEach((item) => urls.push(URL.createObjectURL(item.blob)));
+        unzip(file).then(files => {
+          files.forEach(item => urls.push(URL.createObjectURL(item.blob)));
           dispatch({ type: "SET_IMAGE_URLS", payload: urls });
           dispatch({ type: "TOGGLE_LOADING" });
         });
       } catch (error) {
         console.error(error);
       } finally {
-        urls.forEach((url) => URL.revokeObjectURL(url));
+        urls.forEach(url => URL.revokeObjectURL(url));
       }
     }
   }
@@ -81,7 +97,21 @@ export default function DragSection({ state, dispatch }) {
     <div>
       <div
         ref={dragSectionRef}
-        className="flex justify-center items-center min-h-52 p-4 border-4 border-dashed border-gray-200 hover:border-gray-300 rounded-3xl ease-in duration-200"
+        className={classNames(
+          "flex",
+          "justify-center",
+          "items-center",
+          "min-h-52",
+          "p-4",
+          "border-4",
+          "border-dashed",
+          "border-gray-200",
+          "hover:border-blue-400",
+          "rounded-3xl",
+          "ease-in",
+          "duration-200",
+          { "border-blue-400": hover }
+        )}
       >
         <div className="drag-content">
           <p className="text-lg">
@@ -100,7 +130,7 @@ export default function DragSection({ state, dispatch }) {
             className="hidden"
             type="file"
             accept=".cbz,.zip"
-            onChange={handleUpdateFile}
+            onInput={handleUpdateFile}
             title="上传漫画文件"
           />
         </div>

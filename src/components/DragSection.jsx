@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "preact/hooks";
+import { fileOpen } from "browser-fs-access";
 import classNames from "classnames";
+import { useEffect, useRef, useState } from "preact/hooks";
 
 import { unzip } from "@/utils/unzip.js";
 
@@ -93,46 +94,93 @@ export default function DragSection({ state, dispatch }) {
     }
   }
 
+  const [result, setResult] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+
+  function openFileLocal(multiple = false) {
+    window
+      .showOpenFilePicker({
+        multiple: multiple,
+        excludeAcceptAllOption: true,
+        types: [
+          {
+            description: "cbz 或 zip 漫画文件",
+            accept: {
+              "application/zip": [".zip", ".cbz"]
+            }
+          }
+        ]
+      })
+      .then(fileHandles => {
+        console.log(fileHandles);
+        let files = fileHandles.map(fileHandle => fileHandle.name || "").join("\n");
+        setResult(`选择了 ${fileHandles.length} 个文件: \n${files}`);
+        setErrMsg("");
+      })
+      .catch(err => {
+        console.log(err);
+        setResult("");
+        setErrMsg("选择文件失败: " + err.message);
+      });
+  }
+
+  function openComicFile(multiple = false) {
+    fileOpen({
+      multiple: multiple,
+      excludeAcceptAllOption: true,
+      types: [
+        {
+          description: "cbz 或 zip 漫画文件",
+          accept: {
+            "application/zip": [".zip", ".cbz"]
+          }
+        }
+      ]
+    })
+      .then(fileHandles => {
+        dispatch({ type: "TOGGLE_LOADING" });
+        const file = fileHandles[0];
+        if (file) {
+          const urls = [];
+          try {
+            unzip(file).then(files => {
+              files.forEach(item => urls.push(URL.createObjectURL(item.blob)));
+              dispatch({ type: "SET_IMAGE_URLS", payload: urls });
+              dispatch({ type: "TOGGLE_LOADING" });
+            });
+          } catch (error) {
+            console.error(error);
+          } finally {
+            urls.forEach(url => URL.revokeObjectURL(url));
+          }
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
   return (
     <div>
       <div
         ref={dragSectionRef}
         className={classNames(
-          "flex",
-          "justify-center",
-          "items-center",
-          "min-h-52",
-          "p-4",
-          "border-4",
-          "border-dashed",
-          "border-gray-200",
-          "hover:border-blue-400",
-          "rounded-3xl",
-          "ease-in",
-          "duration-200",
+          "flex min-h-52 items-center justify-center rounded-3xl border-4 border-dashed border-gray-200 p-4 duration-200 ease-in hover:border-blue-400",
           { "border-blue-400": hover }
         )}
       >
         <div className="drag-content">
           <p className="text-lg">
             将漫画文件拖动到此处或
-            <label
-              className="underline cursor-pointer text-blue-500"
-              htmlFor="upload-file"
+            <button
+              className="cursor-pointer text-blue-500 underline"
               title="打开文件"
+              onClick={openComicFile}
             >
               选择文件
-            </label>
+            </button>
             开始阅读
           </p>
-          <input
-            id="upload-file"
-            className="hidden"
-            type="file"
-            accept=".cbz,.zip"
-            onInput={handleUpdateFile}
-            title="上传漫画文件"
-          />
         </div>
       </div>
     </div>

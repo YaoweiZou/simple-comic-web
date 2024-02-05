@@ -1,7 +1,7 @@
 export default function ActionButton({ children, title, onClick }) {
   return (
     <button
-      className="flex justify-center items-center h-[45px] min-w-9 mx-[5px] cursor-pointer"
+      className="mx-[5px] flex h-[45px] min-w-10 cursor-pointer items-center justify-center rounded-md transition-colors duration-300 ease-in-out hover:bg-gray-200"
       title={title}
       onClick={onClick}
     >

@@ -4,7 +4,7 @@
  * @param {string[]} state.imageUrls
  * @param {number} state.pageIndex
  * @param {"Single" | "Double" | "Webtoon"} state.readMode
- * @param {"RightToLeft" | "LeftToRight" | "TopToBottom"} state.readOrder
+ * @param {"LTR" | "RTL" | "TTB"} state.readOrder
  * @param {boolean} state.isLoading
  * @param {Object} action
  * @param {"SET_IMAGE_URLS"| "SET_PAGE_INDEX"

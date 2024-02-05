@@ -1,11 +1,9 @@
 import { fileOpen } from "browser-fs-access";
-import classNames from "classnames";
 import { useEffect, useRef, useState } from "preact/hooks";
 
 import { unzip } from "@/utils/unzip.js";
 
 export default function DragSection({ state, dispatch }) {
-  const [hover, setHover] = useState(false);
   const dragSectionRef = useRef(null);
 
   useEffect(() => {
@@ -40,7 +38,6 @@ export default function DragSection({ state, dispatch }) {
   useEffect(() => {
     const dragEnterEvent = e => {
       e.preventDefault();
-      setHover(true);
     };
 
     if (dragSectionRef.current) {
@@ -61,7 +58,6 @@ export default function DragSection({ state, dispatch }) {
   useEffect(() => {
     const dragLeave = e => {
       e.preventDefault();
-      setHover(false);
     };
 
     if (dragSectionRef.current) {
@@ -70,29 +66,6 @@ export default function DragSection({ state, dispatch }) {
 
     return () => dragSectionRef.current.removeEventListener("dragleave", dragLeave);
   });
-
-  function handleUpdateFile(event) {
-    const files = event.target.files ?? [];
-    if (files.length === 0) {
-      return;
-    }
-    dispatch({ type: "TOGGLE_LOADING" });
-    const file = files[0];
-    if (file) {
-      const urls = [];
-      try {
-        unzip(file).then(files => {
-          files.forEach(item => urls.push(URL.createObjectURL(item.blob)));
-          dispatch({ type: "SET_IMAGE_URLS", payload: urls });
-          dispatch({ type: "TOGGLE_LOADING" });
-        });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        urls.forEach(url => URL.revokeObjectURL(url));
-      }
-    }
-  }
 
   const [result, setResult] = useState("");
   const [errMsg, setErrMsg] = useState("");
@@ -164,10 +137,7 @@ export default function DragSection({ state, dispatch }) {
     <div>
       <div
         ref={dragSectionRef}
-        className={classNames(
-          "flex min-h-52 items-center justify-center rounded-3xl border-4 border-dashed border-gray-200 p-4 duration-200 ease-in hover:border-blue-400",
-          { "border-blue-400": hover }
-        )}
+        className="flex min-h-52 items-center justify-center rounded-3xl border-4 border-dashed border-gray-300 p-4 duration-200 ease-in"
       >
         <div className="drag-content">
           <p className="text-lg">

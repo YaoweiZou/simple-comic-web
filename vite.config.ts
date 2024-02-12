@@ -1,18 +1,17 @@
-import preact from "@preact/preset-vite";
-import path from "path";
+import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: "./",
-  plugins: [preact()],
+  plugins: [react()],
   server: {
     port: 3000
   },
   resolve: {
     alias: {
-      "~": path.resolve(__dirname, "./"),
-      "@": path.resolve(__dirname, "./src")
+      "~": ".",
+      "@": "/src"
     }
   }
 });

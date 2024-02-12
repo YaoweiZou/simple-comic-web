@@ -4,7 +4,7 @@ import { unzipSync } from "fflate";
  *
  * @param {File} file
  */
-export function unzip(file) {
+export function unzip(file: File) {
   return file.arrayBuffer().then(buff => {
     const fileData = new Uint8Array(buff);
     const unzipped = unzipSync(fileData, {

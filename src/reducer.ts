@@ -1,18 +1,25 @@
-/**
- *
- * @param {Object} state
- * @param {string[]} state.imageUrls
- * @param {number} state.pageIndex
- * @param {"Single" | "Double" | "Webtoon"} state.readMode
- * @param {"LTR" | "RTL" | "TTB"} state.readOrder
- * @param {boolean} state.isLoading
- * @param {Object} action
- * @param {"SET_IMAGE_URLS"| "SET_PAGE_INDEX"
- * | "SET_READ_MODE" | "SET_READ_ORDER" | "TOGGLE_LOADING"
- * | "NEXT_PAGE" | "PREV_PAGE" | "MATCH_PAGE"} action.type
- * @param {number | string | string[]} [action.payload]
- */
-export default function reducer(state, action) {
+export type State = {
+  imageUrls: string[];
+  pageIndex: number;
+  readMode: "Single" | "Double" | "Webtoon";
+  readOrder: "LTR" | "RTL" | "TTB";
+  isLoading: boolean;
+};
+
+export type Action = {
+  type:
+    | "SET_IMAGE_URLS"
+    | "SET_PAGE_INDEX"
+    | "SET_READ_MODE"
+    | "SET_READ_ORDER"
+    | "TOGGLE_LOADING"
+    | "NEXT_PAGE"
+    | "PREV_PAGE"
+    | "MATCH_PAGE";
+  payload: number | string | string[];
+};
+
+export default function reducer(state: State, action: Action) {
   switch (action.type) {
     case "SET_IMAGE_URLS":
       if (state.imageUrls.length !== 0) {

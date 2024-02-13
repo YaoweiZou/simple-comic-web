@@ -1,12 +1,12 @@
 import { Button, Slider, SliderValue } from "@nextui-org/react";
+import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
-import { IconXmark } from "../icons/IconXmark";
 
 export default function Zoom() {
   const [value, setValue] = useState<SliderValue>(50);
 
   return (
-    <div className="flex h-full w-44 max-w-md flex-col items-start justify-center gap-2">
+    <div className="flex w-44 flex-col justify-center gap-2 px-2">
       <Slider
         aria-label="Volume"
         className="max-w-md"
@@ -21,7 +21,7 @@ export default function Zoom() {
             radius="sm"
             onPress={() => setValue(prev => (prev >= 10 ? prev - 10 : 0))}
           >
-            <IconXmark fill="#1d1d1f" fillOpacity="0.85" />
+            <Minus strokeWidth={1.5} />
           </Button>
         }
         endContent={
@@ -31,7 +31,7 @@ export default function Zoom() {
             radius="sm"
             onPress={() => setValue(prev => (prev <= 90 ? prev + 10 : 100))}
           >
-            <IconXmark fill="#1d1d1f" fillOpacity="0.85" />
+            <Plus strokeWidth={1.5} />
           </Button>
         }
       />

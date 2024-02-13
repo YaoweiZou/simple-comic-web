@@ -1,15 +1,19 @@
 import { Button, Tab, Tabs } from "@nextui-org/react";
+import { BookOpenCheck, FileArchive, LayoutGrid, XCircle } from "lucide-react";
+import { Key, useState } from "react";
 
-import { IconDocBadgePlus } from "@/components/icons/IconDocBadgePlus";
-import { IconRectangleGrid } from "@/components/icons/IconRectangleGrid";
-import { IconWandAndStars } from "@/components/icons/IconWandAndStars";
-import { IconXmark } from "@/components/icons/IconXmark";
 import { unzip } from "@/data/archive";
 import { fileOpen } from "@/data/filesystem";
 import MoreActionsButton from "./MoreActionsButton";
+import Zoom from "./Zoom";
 
 export default function Header({ state, dispatch }) {
   const { isLoading } = state;
+  const [pageView, setPageView] = useState<"single" | "double" | "scroll">("double");
+
+  function handlePageViewChange(key: Key) {
+    setPageView(key as "single" | "double" | "scroll");
+  }
 
   async function openComicFile() {
     const comicFile = await fileOpen({ id: "open-comic-file" });
@@ -41,15 +45,15 @@ export default function Header({ state, dispatch }) {
       <div className="flex flex-row items-center justify-start gap-3">
         <div className="whitespace-nowrap font-sans text-base font-semibold">Simple Comic Web</div>
         <Button
-          title="打开文件"
-          aria-label="打开文件"
+          title="打开漫画文件"
+          aria-label="打开漫画文件"
           isIconOnly
           variant="light"
           radius="sm"
           disabled={isLoading}
           onClick={() => openComicFile()}
         >
-          <IconDocBadgePlus fill="#1d1d1f" fillOpacity="0.85" />
+          <FileArchive strokeWidth={1.5} />
         </Button>
         <Button
           title="关闭"
@@ -60,14 +64,19 @@ export default function Header({ state, dispatch }) {
           disabled={isLoading}
           onClick={handelClose}
         >
-          <IconXmark fill="#1d1d1f" fillOpacity="0.85" />
+          <XCircle strokeWidth={1.5} />
         </Button>
+        <Zoom />
       </div>
       <div className="flex flex-row items-center justify-end gap-3">
-        <Tabs aria-label="readMode" onSelectionChange={() => {}}>
+        <Tabs
+          aria-label="页面视图"
+          defaultSelectedKey="double"
+          onSelectionChange={handlePageViewChange}
+        >
           <Tab key="single" title="单页" />
           <Tab key="double" title="双页" />
-          <Tab key="webtoon" title="Webtoon" />
+          <Tab key="scroll" title="滚动" />
         </Tabs>
         <Button
           title="调整跨页匹配，仅在双页面布局有效。"
@@ -77,7 +86,7 @@ export default function Header({ state, dispatch }) {
           radius="sm"
           onClick={handleMatchPage}
         >
-          <IconWandAndStars fill="#1d1d1f" fillOpacity="0.85" />
+          <BookOpenCheck strokeWidth={1.5} />
         </Button>
         <Button
           title="缩略视图"
@@ -87,7 +96,7 @@ export default function Header({ state, dispatch }) {
           radius="sm"
           onClick={() => {}}
         >
-          <IconRectangleGrid fill="#1d1d1f" fillOpacity="0.85" />
+          <LayoutGrid strokeWidth={1.5} />
         </Button>
         <MoreActionsButton />
       </div>

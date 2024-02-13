@@ -1,7 +1,8 @@
-import { fileOpen } from "browser-fs-access";
+import { Link } from "@nextui-org/react";
 import { useEffect, useRef } from "react";
 
 import { unzip } from "@/data/archive.js";
+import { fileOpen } from "@/data/filesystem";
 
 export default function DragSection({ dispatch }) {
   const dragSectionRef = useRef<HTMLDivElement>(null);
@@ -80,7 +81,7 @@ export default function DragSection({ dispatch }) {
   }
 
   return (
-    <div>
+    <div className="mt-6">
       <div
         ref={dragSectionRef}
         className="flex min-h-52 items-center justify-center rounded-3xl border-4 border-dashed border-gray-300 p-4 duration-200 ease-in"
@@ -88,13 +89,15 @@ export default function DragSection({ dispatch }) {
         <div className="drag-content">
           <p className="text-lg">
             将漫画文件拖动到此处或
-            <button
-              className="cursor-pointer text-blue-500 underline"
+            <Link
+              className="cursor-pointer"
               title="打开文件"
-              onClick={openComicFile}
+              onPress={openComicFile}
+              underline="always"
+              size="lg"
             >
               选择文件
-            </button>
+            </Link>
             开始阅读
           </p>
         </div>

@@ -9,16 +9,33 @@ import {
   Tab,
   Tabs
 } from "@nextui-org/react";
+import { Settings } from "lucide-react";
 import { Key, useState } from "react";
 
-import { IconRectangleGrid } from "@/components/icons/IconRectangleGrid";
 import AboutDialog from "./AboutDialog";
 
 export default function MoreActionsButton() {
+  const [fullscreen, setFullscreen] = useState(false);
   const [aboutDialogOpen, setAboutDialogOpen] = useState(false);
 
-  function readModeChange(key: Key) {
-    console.log(key.toString());
+  const [readMode, setReadMode] = useState<"ltf" | "rtl" | "webtoon">("rtl");
+
+  function isFullscreen(): boolean {
+    return document.fullscreenElement !== null;
+  }
+
+  function toggleFullScreen() {
+    if (isFullscreen()) {
+      document.exitFullscreen();
+      setFullscreen(false);
+    } else {
+      document.documentElement.requestFullscreen();
+      setFullscreen(true);
+    }
+  }
+
+  function handleReadModeChange(key: Key) {
+    setReadMode(key as "ltf" | "rtl" | "webtoon");
   }
 
   return (
@@ -33,26 +50,38 @@ export default function MoreActionsButton() {
             radius="sm"
             onClick={() => {}}
           >
-            <IconRectangleGrid fill="#1d1d1f" fillOpacity="0.85" />
+            <Settings strokeWidth={1.5} />
           </Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="Static Actions" variant="flat">
           <DropdownSection title="更多设置" aria-label="设置" showDivider>
-            <DropdownItem key="fullScreen" shortcut="⌘F">
-              进入全屏
+            <DropdownItem key="fullScreen" shortcut="⌘F" onClick={toggleFullScreen}>
+              {fullscreen ? "退出全屏" : "进入全屏"}
             </DropdownItem>
             <DropdownItem
               isReadOnly
               key="readOrder"
-              description="仅在单页或双页布局有效"
+              description="Webtoon 模式仅在滚动视图中有效"
               endContent={
-                <Tabs aria-label="readOrder" onSelectionChange={readModeChange}>
+                <Tabs
+                  aria-label="阅读模式"
+                  defaultSelectedKey="rtl"
+                  onSelectionChange={handleReadModeChange}
+                >
                   <Tab key="ltr" title="普通" />
                   <Tab key="rtl" title="日漫" />
+                  <Tab key="webtoon" title="Webtoon" />
                 </Tabs>
               }
             >
-              翻页顺序
+              阅读模式
+            </DropdownItem>
+            <DropdownItem
+              isReadOnly
+              key="showPicInfo"
+              endContent={<Switch aria-label="显示图片信息" />}
+            >
+              显示图片信息
             </DropdownItem>
             <DropdownItem
               isReadOnly
@@ -64,9 +93,6 @@ export default function MoreActionsButton() {
             </DropdownItem>
           </DropdownSection>
           <DropdownSection title="其他" aria-label="其他">
-            <DropdownItem key="currentPageInfo" shortcut="⌘I">
-              当前页面信息
-            </DropdownItem>
             <DropdownItem key="about" onClick={() => setAboutDialogOpen(true)}>
               关于
             </DropdownItem>

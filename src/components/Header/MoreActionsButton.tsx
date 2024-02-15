@@ -13,7 +13,7 @@ import { Settings } from "lucide-react";
 import { Key, useContext, useState } from "react";
 
 import { AppSettingsContext } from "@/components/AppSettingsProvider";
-import { defaultAppSettings } from "@/data/settings";
+import { defaultAppSettings, readMode } from "@/data/settings";
 import AboutDialog from "./AboutDialog";
 
 export default function MoreActionsButton() {
@@ -21,6 +21,16 @@ export default function MoreActionsButton() {
   const [aboutDialogOpen, setAboutDialogOpen] = useState(false);
 
   const { appSettings, updateAppSettings } = useContext(AppSettingsContext);
+
+  const { pageView, noiseReduction, showPicInfo } = appSettings;
+
+  const disabledReadModeKyes: readMode[] = [];
+
+  if (pageView === "single" || pageView === "double") {
+    disabledReadModeKyes.push("webtoon");
+  } else {
+    disabledReadModeKyes.push("rtl");
+  }
 
   function isFullscreen(): boolean {
     return document.fullscreenElement !== null;
@@ -76,6 +86,7 @@ export default function MoreActionsButton() {
                   aria-label="阅读模式"
                   defaultSelectedKey={defaultAppSettings.readMode}
                   onSelectionChange={handleReadModeChange}
+                  disabledKeys={disabledReadModeKyes}
                 >
                   <Tab key="ltr" title="普通" />
                   <Tab key="rtl" title="日漫" />
@@ -91,7 +102,7 @@ export default function MoreActionsButton() {
               endContent={
                 <Switch
                   aria-label="显示图片信息"
-                  defaultSelected={appSettings.showPicInfo}
+                  defaultSelected={showPicInfo}
                   onValueChange={handleShowPicInfo}
                 />
               }
@@ -104,7 +115,7 @@ export default function MoreActionsButton() {
               endContent={
                 <Switch
                   aria-label="图片降噪"
-                  defaultSelected={appSettings.noiseReduction}
+                  defaultSelected={noiseReduction}
                   onValueChange={handleNoiseReduction}
                 />
               }

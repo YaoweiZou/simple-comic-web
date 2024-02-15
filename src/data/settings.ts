@@ -1,6 +1,10 @@
+export type pageView = "single" | "double" | "scroll";
+
+export type readMode = "ltr" | "rtl" | "webtoon";
+
 export interface AppSettings {
-  pageView: "single" | "double" | "scroll";
-  readMode: "ltr" | "rtl" | "webtoon";
+  pageView: pageView;
+  readMode: readMode;
   showPicInfo: boolean;
   noiseReduction: boolean;
 }

@@ -1,29 +1,23 @@
-export default function ImagesView({
-  state,
-  dispatch
-}: {
-  state: {
-    imageUrls: string[];
-    pageIndex: number;
-    readMode: "LTR" | "RTL";
-    readOrder: "LTR" | "RTL";
-  };
-  dispatch: React.Dispatch<{ type: "NEXT_PAGE" | "PREV_PAGE" }>;
-}) {
-  const { imageUrls, pageIndex, readMode, readOrder } = state;
+import React, { useContext } from "react";
+import { AppSettingsContext } from "./AppSettingsProvider";
 
-  const leftPageIndex = readMode === "LTR" ? pageIndex : pageIndex + 1;
-  const rightPageIndex = readMode === "LTR" ? pageIndex + 1 : pageIndex;
+export default function ImagesView() {
+  const { imagesInfo, appSettings, pageIndex, updatePageIndex } = useContext(AppSettingsContext);
 
-  function handleWhell(e) {
+  const { pageView, readMode } = appSettings;
+
+  const leftPage = readMode === "ltr" ? imagesInfo[pageIndex] : imagesInfo[pageIndex + 1];
+  const rightPage = readMode === "ltr" ? imagesInfo[pageIndex + 1] : imagesInfo[pageIndex];
+
+  function handleWhell(e: React.WheelEvent<HTMLDivElement>) {
     console.log(e);
   }
 
-  function handleChangePage(page) {
-    if ((page === "left" && readOrder === "RTL") || (page === "right" && readOrder === "LTR")) {
-      dispatch({ type: "NEXT_PAGE" });
+  function handleChangePage(page: "left" | "right") {
+    if ((page === "left" && readMode === "rtl") || (page === "right" && readMode === "ltr")) {
+      updatePageIndex(pageIndex + (pageView === "single" ? 1 : 2));
     } else {
-      dispatch({ type: "PREV_PAGE" });
+      updatePageIndex(pageIndex - (pageView === "single" ? 1 : 2));
     }
   }
 
@@ -31,16 +25,12 @@ export default function ImagesView({
     <main className="h-[calc(100vh-55px)]" onWheel={handleWhell}>
       <div className="flex h-full select-none flex-row justify-center">
         <div className="w-1/2 flex-grow" onClick={() => handleChangePage("left")}>
-          <img
-            className="float-end h-full object-contain"
-            src={imageUrls[leftPageIndex]}
-            draggable={false}
-          />
+          <img className="float-end h-full object-contain" src={leftPage?.url} draggable={false} />
         </div>
         <div className="w-1/2 flex-grow" onClick={() => handleChangePage("right")}>
           <img
             className="float-start h-full object-contain"
-            src={imageUrls[rightPageIndex]}
+            src={rightPage?.url}
             draggable={false}
           />
         </div>

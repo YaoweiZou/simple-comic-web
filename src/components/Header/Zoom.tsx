@@ -19,7 +19,7 @@ export default function Zoom() {
             isIconOnly
             variant="light"
             radius="sm"
-            onPress={() => setValue(prev => (prev >= 10 ? prev - 10 : 0))}
+            onPress={() => setValue(prev => ((prev as number) >= 10 ? (prev as number) - 10 : 0))}
           >
             <Minus strokeWidth={1.5} />
           </Button>
@@ -29,7 +29,7 @@ export default function Zoom() {
             isIconOnly
             variant="light"
             radius="sm"
-            onPress={() => setValue(prev => (prev <= 90 ? prev + 10 : 100))}
+            onPress={() => setValue(prev => ((prev as number) <= 90 ? (prev as number) + 10 : 100))}
           >
             <Plus strokeWidth={1.5} />
           </Button>

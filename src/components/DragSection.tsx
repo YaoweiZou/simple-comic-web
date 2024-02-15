@@ -1,10 +1,13 @@
 import { Link } from "@nextui-org/react";
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 
 import { unzip } from "@/data/archive.js";
 import { fileOpen } from "@/data/filesystem";
+import { AppSettingsContext } from "./AppSettingsProvider";
 
-export default function DragSection({ dispatch }) {
+export default function DragSection() {
+  const { updateLoading, updateImagesInfo } = useContext(AppSettingsContext);
+
   const dragSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -12,15 +15,15 @@ export default function DragSection({ dispatch }) {
       e.preventDefault();
       if (!e.dataTransfer) return;
       const files = Array.from(e.dataTransfer.files);
-      dispatch({ type: "TOGGLE_LOADING" });
+      updateLoading(true);
       const file = files[0];
       if (file) {
         const urls: string[] = [];
         try {
           unzip(file).then(files => {
             files.forEach(item => urls.push(URL.createObjectURL(item.blob)));
-            dispatch({ type: "SET_IMAGE_URLS", payload: urls });
-            dispatch({ type: "TOGGLE_LOADING" });
+            updateImagesInfo(urls.map(url => ({ url, width: 0, height: 0 })));
+            updateLoading(false);
           });
         } catch (error) {
           console.error(error);
@@ -33,45 +36,37 @@ export default function DragSection({ dispatch }) {
     const dragSectionRefCopy = dragSectionRef.current;
     dragSectionRefCopy?.addEventListener("drop", dropEvent);
     return () => dragSectionRefCopy?.removeEventListener("drop", dropEvent);
-  }, [dispatch]);
+  }, [updateLoading, updateImagesInfo]);
 
   useEffect(() => {
-    const dragEnterEvent = (e: DragEvent) => {
-      e.preventDefault();
-    };
-
+    // drag and drop events
     const dragSectionRefCopy = dragSectionRef.current;
+
+    const dragEnterEvent = (e: DragEvent) => e.preventDefault();
     dragSectionRefCopy?.addEventListener("dragenter", dragEnterEvent);
-    return () => dragSectionRefCopy?.removeEventListener("dragenter", dragEnterEvent);
-  }, []);
 
-  useEffect(() => {
     const dragOverEvent = (e: DragEvent) => e.preventDefault();
-
-    const dragSectionRefCopy = dragSectionRef.current;
     dragSectionRefCopy?.addEventListener("dragover", dragOverEvent);
-    return () => dragSectionRefCopy?.removeEventListener("dragover", dragOverEvent);
-  }, []);
 
-  useEffect(() => {
-    const dragLeave = (e: DragEvent) => {
-      e.preventDefault();
-    };
-
-    const dragSectionRefCopy = dragSectionRef.current;
+    const dragLeave = (e: DragEvent) => e.preventDefault();
     dragSectionRefCopy?.addEventListener("dragleave", dragLeave);
-    return () => dragSectionRefCopy?.removeEventListener("dragleave", dragLeave);
-  });
+
+    return () => {
+      dragSectionRefCopy?.removeEventListener("dragenter", dragEnterEvent);
+      dragSectionRefCopy?.removeEventListener("dragover", dragOverEvent);
+      dragSectionRefCopy?.removeEventListener("dragleave", dragLeave);
+    };
+  }, []);
 
   async function openComicFile() {
     const comicFile = await fileOpen({ id: "open-comic-file" });
-    dispatch({ type: "TOGGLE_LOADING" });
+    updateLoading(true);
     const urls: string[] = [];
     try {
       unzip(comicFile).then(files => {
         files.forEach(item => urls.push(URL.createObjectURL(item.blob)));
-        dispatch({ type: "SET_IMAGE_URLS", payload: urls });
-        dispatch({ type: "TOGGLE_LOADING" });
+        updateImagesInfo(urls.map(url => ({ url, width: 0, height: 0 })));
+        updateLoading(false);
       });
     } catch (error) {
       console.error(error);

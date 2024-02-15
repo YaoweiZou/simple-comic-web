@@ -10,15 +10,17 @@ import {
   Tabs
 } from "@nextui-org/react";
 import { Settings } from "lucide-react";
-import { Key, useState } from "react";
+import { Key, useContext, useState } from "react";
 
+import { AppSettingsContext } from "@/components/AppSettingsProvider";
+import { defaultAppSettings } from "@/data/settings";
 import AboutDialog from "./AboutDialog";
 
 export default function MoreActionsButton() {
   const [fullscreen, setFullscreen] = useState(false);
   const [aboutDialogOpen, setAboutDialogOpen] = useState(false);
 
-  const [readMode, setReadMode] = useState<"ltf" | "rtl" | "webtoon">("rtl");
+  const { appSettings, updateAppSettings } = useContext(AppSettingsContext);
 
   function isFullscreen(): boolean {
     return document.fullscreenElement !== null;
@@ -35,7 +37,15 @@ export default function MoreActionsButton() {
   }
 
   function handleReadModeChange(key: Key) {
-    setReadMode(key as "ltf" | "rtl" | "webtoon");
+    updateAppSettings({ ...appSettings, readMode: key as "ltr" | "rtl" | "webtoon" });
+  }
+
+  function handleShowPicInfo(checked: boolean) {
+    updateAppSettings({ ...appSettings, showPicInfo: checked });
+  }
+
+  function handleNoiseReduction(checked: boolean): void {
+    updateAppSettings({ ...appSettings, noiseReduction: checked });
   }
 
   return (
@@ -61,11 +71,10 @@ export default function MoreActionsButton() {
             <DropdownItem
               isReadOnly
               key="readOrder"
-              description="Webtoon 模式仅在滚动视图中有效"
               endContent={
                 <Tabs
                   aria-label="阅读模式"
-                  defaultSelectedKey="rtl"
+                  defaultSelectedKey={defaultAppSettings.readMode}
                   onSelectionChange={handleReadModeChange}
                 >
                   <Tab key="ltr" title="普通" />
@@ -79,15 +88,26 @@ export default function MoreActionsButton() {
             <DropdownItem
               isReadOnly
               key="showPicInfo"
-              endContent={<Switch aria-label="显示图片信息" />}
+              endContent={
+                <Switch
+                  aria-label="显示图片信息"
+                  defaultSelected={appSettings.showPicInfo}
+                  onValueChange={handleShowPicInfo}
+                />
+              }
             >
               显示图片信息
             </DropdownItem>
             <DropdownItem
               isReadOnly
-              key=""
-              description="图片降噪"
-              endContent={<Switch aria-label="图片降噪" />}
+              key="noiseReduction"
+              endContent={
+                <Switch
+                  aria-label="图片降噪"
+                  defaultSelected={appSettings.noiseReduction}
+                  onValueChange={handleNoiseReduction}
+                />
+              }
             >
               图片降噪
             </DropdownItem>

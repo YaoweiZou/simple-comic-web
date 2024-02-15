@@ -6,7 +6,6 @@ export const fileOpen = <M extends boolean | undefined = false>(opts: {
   description?: string;
   id: string;
 }) => {
-  // an unsafe TS hack, alas not much we can do AFAIK
   type RetType = M extends false | undefined ? File : File[];
 
   return _fileOpen({

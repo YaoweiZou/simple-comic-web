@@ -1,11 +1,5 @@
 # Simple Comic Web
 
-关于实现的一些想法
+Read cbz and zip comics in browser.
 
-上传压缩文件后初始不生成objectUrl，读取压缩文件中图片路径，保存到数组。
-
-一个负责可视区域内图片的索引数组。长度可调，为了适配条漫、以及屏幕较窄的情况下单页面。
-
-翻页调整的是索引数组。
-
-页面考虑使用canvas固定大小。
+在浏览器中阅读 cbz 和 zip 漫画文件。

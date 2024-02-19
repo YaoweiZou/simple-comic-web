@@ -8,9 +8,11 @@ export default function Welcome() {
         <div>
           <h1 className="text-4xl font-semibold">Simple Comic Web</h1>
           <p className="my-3 text-base">在浏览器中阅读本地漫画，支持 zip 和 cbz 文件。</p>
-          <Link href="https://github.com/YaoweiZou/simple-comic-web" target="_blank">
-            GitHub
-          </Link>
+          <p className="my-3 text-base">
+            <Link href="https://github.com/YaoweiZou/simple-comic-web" target="_blank">
+              GitHub
+            </Link>
+          </p>
         </div>
         <DragSection />
       </div>

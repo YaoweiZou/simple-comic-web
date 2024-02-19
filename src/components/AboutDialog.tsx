@@ -30,9 +30,11 @@ export default function AboutDialog({
             <ModalBody>
               <h1 className="font-bold">Simple Comic Web</h1>
               <p>在浏览器中阅读本地漫画，支持 zip 和 cbz 文件。</p>
-              <Link href="https://github.com/YaoweiZou/simple-comic-web" target="_blank">
-                GitHub
-              </Link>
+              <p>
+                <Link href="https://github.com/YaoweiZou/simple-comic-web" target="_blank">
+                  GitHub
+                </Link>
+              </p>
             </ModalBody>
             <ModalFooter>
               <Button color="primary" variant="light" radius="sm" onPress={onClose}>

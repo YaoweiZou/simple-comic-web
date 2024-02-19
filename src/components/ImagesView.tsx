@@ -9,7 +9,7 @@ export default function ImagesView() {
   const leftPage = readMode === "ltr" ? imagesInfo[pageIndex] : imagesInfo[pageIndex + 1];
   const rightPage = readMode === "ltr" ? imagesInfo[pageIndex + 1] : imagesInfo[pageIndex];
 
-  function handleWhell(e: React.WheelEvent<HTMLDivElement>) {
+  function whellEventHandle(e: React.WheelEvent<HTMLDivElement>) {
     console.log(e);
   }
 
@@ -22,7 +22,7 @@ export default function ImagesView() {
   }
 
   return (
-    <main className="h-[calc(100vh-55px)]" onWheel={handleWhell}>
+    <main className="h-[calc(100vh-55px)]" onWheel={whellEventHandle}>
       <div className="flex h-full select-none flex-row justify-center">
         <div className="w-1/2 flex-grow" onClick={() => handleChangePage("left")}>
           <img className="float-end h-full object-contain" src={leftPage?.url} draggable={false} />

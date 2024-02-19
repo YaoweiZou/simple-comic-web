@@ -1,5 +1,6 @@
 import { Link } from "@nextui-org/react";
-import { useContext, useEffect, useRef } from "react";
+import classNames from "classnames";
+import React, { useContext, useRef, useState } from "react";
 
 import { unzip } from "@/data/archive.js";
 import { fileOpen } from "@/data/filesystem";
@@ -8,55 +9,45 @@ import { AppSettingsContext } from "./AppSettingsProvider";
 export default function DragSection() {
   const { updateLoading, updateImagesInfo } = useContext(AppSettingsContext);
 
-  const dragSectionRef = useRef<HTMLDivElement>(null);
+  const [borderHighlight, setBorderHighlight] = useState(false);
+  const lastEnterTarget = useRef<EventTarget | null>(null);
 
-  useEffect(() => {
-    const dropEvent = (e: DragEvent) => {
-      e.preventDefault();
-      if (!e.dataTransfer) return;
-      const files = Array.from(e.dataTransfer.files);
-      updateLoading(true);
-      const file = files[0];
-      if (file) {
-        const urls: string[] = [];
-        try {
-          unzip(file).then(files => {
-            files.forEach(item => urls.push(URL.createObjectURL(item.blob)));
-            updateImagesInfo(urls.map(url => ({ url, width: 0, height: 0 })));
-            updateLoading(false);
-          });
-        } catch (error) {
-          console.error(error);
-        } finally {
-          urls.forEach(url => URL.revokeObjectURL(url));
-        }
+  function dragEnterEventHandle(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    console.log("enter: ", e.target);
+    setBorderHighlight(true);
+    lastEnterTarget.current = e.target;
+  }
+
+  function dragLeaveHandle(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    console.log("leave: ", e.target);
+    if (e.target === lastEnterTarget.current) {
+      setBorderHighlight(false);
+    }
+  }
+
+  function dropEventHandle(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    if (!e.dataTransfer) return;
+    const files = Array.from(e.dataTransfer.files);
+    updateLoading(true);
+    const file = files[0];
+    if (file) {
+      const urls: string[] = [];
+      try {
+        unzip(file).then(files => {
+          files.forEach(item => urls.push(URL.createObjectURL(item.blob)));
+          updateImagesInfo(urls.map(url => ({ url, width: 0, height: 0 })));
+          updateLoading(false);
+        });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        urls.forEach(url => URL.revokeObjectURL(url));
       }
-    };
-
-    const dragSectionRefCopy = dragSectionRef.current;
-    dragSectionRefCopy?.addEventListener("drop", dropEvent);
-    return () => dragSectionRefCopy?.removeEventListener("drop", dropEvent);
-  }, [updateLoading, updateImagesInfo]);
-
-  useEffect(() => {
-    // drag and drop events
-    const dragSectionRefCopy = dragSectionRef.current;
-
-    const dragEnterEvent = (e: DragEvent) => e.preventDefault();
-    dragSectionRefCopy?.addEventListener("dragenter", dragEnterEvent);
-
-    const dragOverEvent = (e: DragEvent) => e.preventDefault();
-    dragSectionRefCopy?.addEventListener("dragover", dragOverEvent);
-
-    const dragLeave = (e: DragEvent) => e.preventDefault();
-    dragSectionRefCopy?.addEventListener("dragleave", dragLeave);
-
-    return () => {
-      dragSectionRefCopy?.removeEventListener("dragenter", dragEnterEvent);
-      dragSectionRefCopy?.removeEventListener("dragover", dragOverEvent);
-      dragSectionRefCopy?.removeEventListener("dragleave", dragLeave);
-    };
-  }, []);
+    }
+  }
 
   async function openComicFile() {
     const comicFile = await fileOpen({ id: "open-comic-file" });
@@ -78,8 +69,17 @@ export default function DragSection() {
   return (
     <div className="mt-6">
       <div
-        ref={dragSectionRef}
-        className="flex min-h-52 items-center justify-center rounded-3xl border-4 border-dashed border-gray-300 p-4 duration-200 ease-in"
+        className={classNames(
+          "flex min-h-52 items-center justify-center rounded-3xl border-4 border-dashed  p-4 duration-200 ease-in hover:border-blue-400",
+          {
+            "border-blue-400": borderHighlight,
+            "border-gray-300": !borderHighlight
+          }
+        )}
+        onDragEnter={dragEnterEventHandle}
+        onDragOver={e => e.preventDefault()}
+        onDragLeave={dragLeaveHandle}
+        onDrop={dropEventHandle}
       >
         <div className="drag-content">
           <p className="text-lg">

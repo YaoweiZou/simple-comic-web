@@ -10,11 +10,11 @@ import {
   Tabs
 } from "@nextui-org/react";
 import { Settings } from "lucide-react";
-import { Key, useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 
+import AboutDialog from "@/components/AboutDialog";
 import { AppSettingsContext } from "@/components/AppSettingsProvider";
 import { defaultAppSettings, readMode } from "@/data/settings";
-import AboutDialog from "./AboutDialog";
 
 export default function MoreActionsButton() {
   const [fullscreen, setFullscreen] = useState(false);
@@ -46,7 +46,7 @@ export default function MoreActionsButton() {
     }
   }
 
-  function handleReadModeChange(key: Key) {
+  function handleReadModeChange(key: React.Key) {
     updateAppSettings({ ...appSettings, readMode: key as "ltr" | "rtl" | "webtoon" });
   }
 

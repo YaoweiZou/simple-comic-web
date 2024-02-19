@@ -1,6 +1,6 @@
 import { Button, Tab, Tabs } from "@nextui-org/react";
 import { BookOpenCheck, FileArchive, LayoutGrid, XCircle } from "lucide-react";
-import { Key, useContext } from "react";
+import React, { useContext } from "react";
 
 import { AppSettingsContext } from "@/components/AppSettingsProvider";
 import { unzip } from "@/data/archive";
@@ -21,7 +21,7 @@ export default function Header() {
     updatePageIndex
   } = useContext(AppSettingsContext);
 
-  function handlePageViewChange(key: Key) {
+  function handlePageViewChange(key: React.Key) {
     updateAppSettings({ ...appSettings, pageView: key as "single" | "double" | "scroll" });
   }
 

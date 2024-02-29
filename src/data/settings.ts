@@ -1,10 +1,11 @@
-export type pageView = "single" | "double" | "scroll";
+export type PageView = "single" | "double" | "webtoon";
 
-export type readMode = "ltr" | "rtl" | "webtoon";
+export type ReadMode = "ltr" | "rtl";
 
 export interface AppSettings {
-  pageView: pageView;
-  readMode: readMode;
+  pageView: PageView;
+  readMode: ReadMode;
+  pagesGap: boolean;
   showPicInfo: boolean;
   noiseReduction: boolean;
 }
@@ -12,6 +13,7 @@ export interface AppSettings {
 export const defaultAppSettings: AppSettings = {
   pageView: "double",
   readMode: "rtl",
+  pagesGap: false,
   showPicInfo: false,
   noiseReduction: false
 };

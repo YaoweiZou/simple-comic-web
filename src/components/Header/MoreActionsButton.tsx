@@ -14,7 +14,7 @@ import React, { useContext, useState } from "react";
 
 import AboutDialog from "@/components/AboutDialog";
 import { AppSettingsContext } from "@/components/AppSettingsProvider";
-import { defaultAppSettings, readMode } from "@/data/settings";
+import { defaultAppSettings } from "@/data/settings";
 
 export default function MoreActionsButton() {
   const [fullscreen, setFullscreen] = useState(false);
@@ -22,15 +22,7 @@ export default function MoreActionsButton() {
 
   const { appSettings, updateAppSettings } = useContext(AppSettingsContext);
 
-  const { pageView, noiseReduction, showPicInfo } = appSettings;
-
-  const disabledReadModeKyes: readMode[] = [];
-
-  if (pageView === "single" || pageView === "double") {
-    disabledReadModeKyes.push("webtoon");
-  } else {
-    disabledReadModeKyes.push("rtl");
-  }
+  const { pageView, pagesGap, noiseReduction, showPicInfo } = appSettings;
 
   function isFullscreen(): boolean {
     return document.fullscreenElement !== null;
@@ -47,7 +39,11 @@ export default function MoreActionsButton() {
   }
 
   function handleReadModeChange(key: React.Key) {
-    updateAppSettings({ ...appSettings, readMode: key as "ltr" | "rtl" | "webtoon" });
+    updateAppSettings({ ...appSettings, readMode: key as "ltr" | "rtl" });
+  }
+
+  function handlePagesGap(checked: boolean) {
+    updateAppSettings({ ...appSettings, pagesGap: checked });
   }
 
   function handleShowPicInfo(checked: boolean) {
@@ -62,14 +58,7 @@ export default function MoreActionsButton() {
     <>
       <Dropdown radius="sm">
         <DropdownTrigger>
-          <Button
-            title="更多"
-            aria-label="更多"
-            isIconOnly
-            variant="light"
-            radius="sm"
-            onClick={() => {}}
-          >
+          <Button title="更多" aria-label="更多" isIconOnly variant="light" radius="sm">
             <Settings strokeWidth={1.5} />
           </Button>
         </DropdownTrigger>
@@ -80,21 +69,34 @@ export default function MoreActionsButton() {
             </DropdownItem>
             <DropdownItem
               isReadOnly
-              key="readOrder"
+              key="readMode"
               endContent={
                 <Tabs
                   aria-label="阅读模式"
                   defaultSelectedKey={defaultAppSettings.readMode}
                   onSelectionChange={handleReadModeChange}
-                  disabledKeys={disabledReadModeKyes}
+                  isDisabled={pageView === "webtoon"}
                 >
                   <Tab key="ltr" title="普通" />
                   <Tab key="rtl" title="日漫" />
-                  <Tab key="webtoon" title="Webtoon" />
                 </Tabs>
               }
             >
               阅读模式
+            </DropdownItem>
+            <DropdownItem
+              isReadOnly
+              key="pagesGap"
+              endContent={
+                <Switch
+                  aria-label="页面间隔"
+                  defaultSelected={pagesGap}
+                  onValueChange={handlePagesGap}
+                  isDisabled={pageView === "single"}
+                />
+              }
+            >
+              页面间隔
             </DropdownItem>
             <DropdownItem
               isReadOnly

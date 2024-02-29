@@ -22,7 +22,7 @@ export default function Header() {
   } = useContext(AppSettingsContext);
 
   function handlePageViewChange(key: React.Key) {
-    updateAppSettings({ ...appSettings, pageView: key as "single" | "double" | "scroll" });
+    updateAppSettings({ ...appSettings, pageView: key as "single" | "double" | "webtoon" });
   }
 
   async function openComicFile() {
@@ -81,7 +81,7 @@ export default function Header() {
         <Zoom />
       </div>
       <div className="flex flex-row items-center justify-end gap-3">
-        {appSettings.pageView !== "scroll" && (
+        {appSettings.pageView === "double" && (
           <Button
             title="调整跨页匹配，仅在双页面布局有效。"
             aria-label="调整跨页匹配，仅在双页面布局有效。"
@@ -110,7 +110,7 @@ export default function Header() {
         >
           <Tab key="single" title="单页" />
           <Tab key="double" title="双页" />
-          <Tab key="scroll" title="滚动" />
+          <Tab key="webtoon" title="Webtoon" />
         </Tabs>
         <MoreActionsButton />
       </div>

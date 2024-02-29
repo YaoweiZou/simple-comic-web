@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { AppSettingsContext } from "./AppSettingsProvider";
+import { AppSettingsContext } from "../AppSettingsProvider";
 
 export default function ImagesView() {
   const { imagesInfo, appSettings, pageIndex, updatePageIndex } = useContext(AppSettingsContext);

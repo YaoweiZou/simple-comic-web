@@ -20,7 +20,7 @@ export default function Header() {
     updateReadMode
   } = useSettings();
 
-  function handlePageViewChange(key: React.Key) {
+  function changeReadMode(key: React.Key) {
     updateReadMode(key as "single" | "double" | "webtoon");
   }
 
@@ -41,13 +41,13 @@ export default function Header() {
     }
   }
 
-  function handleCloseComic() {
+  function closeComic() {
     imagesInfo.forEach(item => URL.revokeObjectURL(item.url));
     updateImagesInfo([]);
     updateCurrentPage(0);
   }
 
-  function handleMatchPage() {
+  function changePageMatch() {
     updateCurrentPage(currentPage + 1);
   }
 
@@ -73,7 +73,7 @@ export default function Header() {
           variant="light"
           radius="sm"
           disabled={loading}
-          onClick={handleCloseComic}
+          onClick={closeComic}
         >
           <XCircle strokeWidth={1.5} />
         </Button>
@@ -87,7 +87,7 @@ export default function Header() {
           variant="light"
           radius="sm"
           isDisabled={readMode !== "double"}
-          onClick={handleMatchPage}
+          onClick={changePageMatch}
         >
           <BookOpenCheck strokeWidth={1.5} />
         </Button>
@@ -102,9 +102,9 @@ export default function Header() {
           <LayoutGrid strokeWidth={1.5} />
         </Button>
         <Tabs
-          aria-label="页面视图"
+          aria-label="阅读模式"
           defaultSelectedKey={readMode}
-          onSelectionChange={handlePageViewChange}
+          onSelectionChange={changeReadMode}
         >
           <Tab key="single" title="单页" />
           <Tab key="double" title="双页" />

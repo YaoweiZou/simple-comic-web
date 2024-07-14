@@ -59,19 +59,19 @@ export default function MoreActionsButton() {
     return () => document.removeEventListener("fullscreenchange", syncFullscreenState);
   }, []);
 
-  function handleReadModeChange(key: React.Key) {
+  function changeReadOrder(key: React.Key) {
     updateReadOrder(key as "RTL" | "LTR");
   }
 
-  function handlePagesGap(checked: boolean) {
+  function changePagesGap(checked: boolean) {
     updatePagesGap(checked);
   }
 
-  function handleShowPicInfo(checked: boolean) {
+  function changeShowPicInfo(checked: boolean) {
     updateShowPicInfo(checked);
   }
 
-  function handleNoiseReduction(checked: boolean): void {
+  function changeNoiseReduction(checked: boolean): void {
     updateNoiseReduction(checked);
   }
 
@@ -102,7 +102,7 @@ export default function MoreActionsButton() {
                 <Tabs
                   aria-label="阅读顺序"
                   defaultSelectedKey={readOrder}
-                  onSelectionChange={handleReadModeChange}
+                  onSelectionChange={changeReadOrder}
                   isDisabled={readMode === "webtoon"}
                 >
                   <Tab key="LTR" title="LTR" />
@@ -121,7 +121,7 @@ export default function MoreActionsButton() {
                 <Switch
                   aria-label="页面间隔"
                   defaultSelected={pagesGap}
-                  onValueChange={handlePagesGap}
+                  onValueChange={changePagesGap}
                   isDisabled={readMode === "single"}
                 />
               }
@@ -137,7 +137,7 @@ export default function MoreActionsButton() {
                 <Switch
                   aria-label="显示图片信息"
                   defaultSelected={showPicInfo}
-                  onValueChange={handleShowPicInfo}
+                  onValueChange={changeShowPicInfo}
                 />
               }
             >
@@ -152,7 +152,7 @@ export default function MoreActionsButton() {
                 <Switch
                   aria-label="图片降噪"
                   defaultSelected={noiseReduction}
-                  onValueChange={handleNoiseReduction}
+                  onValueChange={changeNoiseReduction}
                 />
               }
             >

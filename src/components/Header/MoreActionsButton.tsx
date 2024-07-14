@@ -9,20 +9,35 @@ import {
   Tab,
   Tabs
 } from "@nextui-org/react";
-import { Settings } from "lucide-react";
-import React, { useContext, useState } from "react";
+import {
+  ArrowLeftRight,
+  BadgeInfo,
+  BetweenVerticalStart,
+  Expand,
+  Image,
+  Info,
+  Settings2
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 import AboutDialog from "@/components/AboutDialog";
-import { AppSettingsContext } from "@/components/AppSettingsProvider";
-import { defaultAppSettings } from "@/data/settings";
+import { useSettings } from "@/store/settings";
 
 export default function MoreActionsButton() {
   const [fullscreen, setFullscreen] = useState(false);
   const [aboutDialogOpen, setAboutDialogOpen] = useState(false);
 
-  const { appSettings, updateAppSettings } = useContext(AppSettingsContext);
-
-  const { pageView, pagesGap, noiseReduction, showPicInfo } = appSettings;
+  const {
+    readMode,
+    readOrder,
+    pagesGap,
+    showPicInfo,
+    noiseReduction,
+    updateReadOrder,
+    updatePagesGap,
+    updateShowPicInfo,
+    updateNoiseReduction
+  } = useSettings();
 
   function isFullscreen(): boolean {
     return document.fullscreenElement !== null;
@@ -31,27 +46,33 @@ export default function MoreActionsButton() {
   function toggleFullScreen() {
     if (isFullscreen()) {
       document.exitFullscreen();
-      setFullscreen(false);
     } else {
       document.documentElement.requestFullscreen();
-      setFullscreen(true);
     }
   }
 
+  useEffect(() => {
+    function syncFullscreenState() {
+      setFullscreen(isFullscreen());
+    }
+    document.addEventListener("fullscreenchange", syncFullscreenState);
+    return () => document.removeEventListener("fullscreenchange", syncFullscreenState);
+  }, []);
+
   function handleReadModeChange(key: React.Key) {
-    updateAppSettings({ ...appSettings, readMode: key as "ltr" | "rtl" });
+    updateReadOrder(key as "RTL" | "LTR");
   }
 
   function handlePagesGap(checked: boolean) {
-    updateAppSettings({ ...appSettings, pagesGap: checked });
+    updatePagesGap(checked);
   }
 
   function handleShowPicInfo(checked: boolean) {
-    updateAppSettings({ ...appSettings, showPicInfo: checked });
+    updateShowPicInfo(checked);
   }
 
   function handleNoiseReduction(checked: boolean): void {
-    updateAppSettings({ ...appSettings, noiseReduction: checked });
+    updateNoiseReduction(checked);
   }
 
   return (
@@ -59,40 +80,49 @@ export default function MoreActionsButton() {
       <Dropdown radius="sm">
         <DropdownTrigger>
           <Button title="更多" aria-label="更多" isIconOnly variant="light" radius="sm">
-            <Settings strokeWidth={1.5} />
+            <Settings2 strokeWidth={1.5} />
           </Button>
         </DropdownTrigger>
         <DropdownMenu aria-label="Static Actions" variant="flat">
-          <DropdownSection title="更多设置" aria-label="设置" showDivider>
-            <DropdownItem key="fullScreen" shortcut="⌘F" onClick={toggleFullScreen}>
+          <DropdownSection title="更多设置" aria-label="更多设置" showDivider>
+            <DropdownItem
+              key="fullScreen"
+              shortcut="⌘F"
+              onClick={toggleFullScreen}
+              startContent={<Expand size={16} strokeWidth={2} />}
+            >
               {fullscreen ? "退出全屏" : "进入全屏"}
             </DropdownItem>
             <DropdownItem
               isReadOnly
+              className="cursor-default"
               key="readMode"
+              startContent={<ArrowLeftRight size={16} strokeWidth={2} />}
               endContent={
                 <Tabs
-                  aria-label="阅读模式"
-                  defaultSelectedKey={defaultAppSettings.readMode}
+                  aria-label="阅读顺序"
+                  defaultSelectedKey={readOrder}
                   onSelectionChange={handleReadModeChange}
-                  isDisabled={pageView === "webtoon"}
+                  isDisabled={readMode === "webtoon"}
                 >
-                  <Tab key="ltr" title="普通" />
-                  <Tab key="rtl" title="日漫" />
+                  <Tab key="LTR" title="LTR" />
+                  <Tab key="RTL" title="RTL" />
                 </Tabs>
               }
             >
-              阅读模式
+              阅读顺序
             </DropdownItem>
             <DropdownItem
               isReadOnly
+              className="cursor-default"
               key="pagesGap"
+              startContent={<BetweenVerticalStart size={16} strokeWidth={2} />}
               endContent={
                 <Switch
                   aria-label="页面间隔"
                   defaultSelected={pagesGap}
                   onValueChange={handlePagesGap}
-                  isDisabled={pageView === "single"}
+                  isDisabled={readMode === "single"}
                 />
               }
             >
@@ -100,7 +130,9 @@ export default function MoreActionsButton() {
             </DropdownItem>
             <DropdownItem
               isReadOnly
+              className="cursor-default"
               key="showPicInfo"
+              startContent={<BadgeInfo size={16} strokeWidth={2} />}
               endContent={
                 <Switch
                   aria-label="显示图片信息"
@@ -113,7 +145,9 @@ export default function MoreActionsButton() {
             </DropdownItem>
             <DropdownItem
               isReadOnly
+              className="cursor-default"
               key="noiseReduction"
+              startContent={<Image size={16} strokeWidth={2} />}
               endContent={
                 <Switch
                   aria-label="图片降噪"
@@ -126,7 +160,11 @@ export default function MoreActionsButton() {
             </DropdownItem>
           </DropdownSection>
           <DropdownSection title="其他" aria-label="其他">
-            <DropdownItem key="about" onClick={() => setAboutDialogOpen(true)}>
+            <DropdownItem
+              key="about"
+              onClick={() => setAboutDialogOpen(true)}
+              startContent={<Info size={16} strokeWidth={2} />}
+            >
               关于
             </DropdownItem>
           </DropdownSection>

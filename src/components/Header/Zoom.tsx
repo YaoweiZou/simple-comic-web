@@ -3,16 +3,18 @@ import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
 
 export default function Zoom() {
-  const [value, setValue] = useState<SliderValue>(50);
+  const [value, setValue] = useState<SliderValue>(200);
 
   return (
-    <div className="flex w-44 flex-col justify-center gap-2 px-2">
+    <div className="flex w-52 flex-col justify-center gap-2 px-2">
       <Slider
         aria-label="Volume"
         className="max-w-md"
         size="sm"
         color="primary"
         value={value}
+        minValue={100}
+        maxValue={400}
         onChange={setValue}
         startContent={
           <Button

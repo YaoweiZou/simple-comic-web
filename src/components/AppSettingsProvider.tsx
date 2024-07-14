@@ -1,5 +1,17 @@
-import { AppSettings, defaultAppSettings } from "@/data/settings";
+import { Settings } from "@/store/settings";
 import { ReactNode, createContext, useState } from "react";
+
+const defaultAppSettings: Settings = {
+  imagesInfo: [],
+  currentPage: 0,
+  loading: false,
+  readMode: "double",
+  readOrder: "RTL",
+  zoom: 100,
+  pagesGap: false,
+  showPicInfo: false,
+  noiseReduction: false
+};
 
 export const AppSettingsContext = createContext<AppState>({
   imagesInfo: [],
@@ -27,8 +39,8 @@ interface AppState {
   updatePageIndex: (pageIndex: number) => void;
   loading: boolean;
   updateLoading: (loading: boolean) => void;
-  appSettings: AppSettings;
-  updateAppSettings: (settings: AppSettings) => void;
+  appSettings: Settings;
+  updateAppSettings: (settings: Settings) => void;
 }
 
 export default function AppSettingsProvider({ children }: { children: ReactNode }) {
@@ -49,9 +61,9 @@ export default function AppSettingsProvider({ children }: { children: ReactNode 
     setLoading(loading);
   };
 
-  const [appSettings, setAppSettings] = useState<AppSettings>({ ...defaultAppSettings });
+  const [appSettings, setAppSettings] = useState<Settings>({ ...defaultAppSettings });
 
-  const updateAppSettings = (settings: AppSettings) => {
+  const updateAppSettings = (settings: Settings) => {
     setAppSettings(settings);
   };
 

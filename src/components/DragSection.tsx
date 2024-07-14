@@ -1,13 +1,13 @@
 import { Link } from "@nextui-org/react";
 import classNames from "classnames";
-import React, { useContext, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { unzip } from "@/data/archive.js";
 import { fileOpen } from "@/data/filesystem";
-import { AppSettingsContext } from "./AppSettingsProvider";
+import { useSettings } from "@/store/settings";
 
 export default function DragSection() {
-  const { updateLoading, updateImagesInfo } = useContext(AppSettingsContext);
+  const {updateLoading, updateImagesInfo: setImagesInfo} = useSettings();
 
   const [borderHighlight, setBorderHighlight] = useState(false);
   const lastEnterTarget = useRef<EventTarget | null>(null);
@@ -38,7 +38,7 @@ export default function DragSection() {
       try {
         unzip(file).then(files => {
           files.forEach(item => urls.push(URL.createObjectURL(item.blob)));
-          updateImagesInfo(urls.map(url => ({ url, width: 0, height: 0 })));
+          setImagesInfo(urls.map(url => ({ url, width: 0, height: 0 })));
           updateLoading(false);
         });
       } catch (error) {
@@ -56,7 +56,7 @@ export default function DragSection() {
     try {
       unzip(comicFile).then(files => {
         files.forEach(item => urls.push(URL.createObjectURL(item.blob)));
-        updateImagesInfo(urls.map(url => ({ url, width: 0, height: 0 })));
+        setImagesInfo(urls.map(url => ({ url, width: 0, height: 0 })));
         updateLoading(false);
       });
     } catch (error) {

@@ -28,7 +28,7 @@ export default function AboutDialog({
           <>
             <ModalHeader className="flex flex-col gap-1">关于</ModalHeader>
             <ModalBody>
-              <h1 className="font-bold">Simple Comic Web</h1>
+              <h2 className="font-bold">Simple Comic Web</h2>
               <p>在浏览器中阅读本地漫画，支持 zip 和 cbz 文件。</p>
               <p>
                 <Link href="https://github.com/YaoweiZou/simple-comic-web" target="_blank">
